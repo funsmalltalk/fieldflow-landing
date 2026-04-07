@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FieldFlow — Real-Time Weld Execution Visibility for Turnaround Managers</title>
+  <meta name="description" content="Stop being the last to know about a cut-out. FieldFlow gives turnaround managers real-time weld execution visibility across every contractor and shift.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #0D1B2A;
+      --navy-mid: #1B2E42;
+      --navy-light: #243447;
+      --steel: #2E4A6B;
+      --blue: #1A6BAF;
+      --blue-light: #2080CC;
+      --amber: #E8930A;
+      --amber-light: #FFA724;
+      --amber-pale: #FFF5E0;
+      --red: #C0392B;
+      --red-light: #FDEDEC;
+      --green: #1A7A4A;
+      --green-light: #E8F7EE;
+      --white: #FFFFFF;
+      --off-white: #F5F7FA;
+      --gray-100: #EEF1F5;
+      --gray-200: #D8DDE6;
+      --gray-400: #8E97A6;
+      --gray-600: #4A5568;
+      --text: #0D1B2A;
+    }
+    html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+    body { font-family: "Inter", sans-serif; color: var(--text); background: var(--white); -webkit-font-smoothing: antialiased; }
+    .container { max-width: 1080px; margin: 0 auto; padding: 0 28px; }
+    img { max-width: 100%; display: block; }
+    a { text-decoration: none; }
+
+    /* HERO IMAGE */
+    .hero-img-wrap { margin-top: 56px; border-radius: 16px; overflow: hidden; position: relative; box-shadow: 0 32px 80px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.08); }
+    .hero-img-wrap img { width: 100%; height: 420px; object-fit: cover; object-position: center 40%; display: block; }
+    .hero-img-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(13,27,42,0.7) 0%, transparent 50%); }
+    .hero-img-caption { position: absolute; bottom: 20px; left: 24px; right: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .hero-img-tag { background: rgba(232,147,10,0.9); color: var(--navy); font-size: 11px; font-weight: 800; padding: 5px 12px; border-radius: 6px; letter-spacing: 1px; text-transform: uppercase; }
+    .hero-img-label { font-size: 13px; color: rgba(255,255,255,0.6); font-weight: 500; }
+
+    /* SECTION IMAGES */
+    .section-img { border-radius: 16px; overflow: hidden; }
+    .section-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    /* WELDER BANNER */
+    .welder-banner { position: relative; height: 360px; overflow: hidden; }
+    .welder-banner img { width: 100%; height: 100%; object-fit: cover; object-position: center 30%; }
+    .welder-banner-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(13,27,42,0.92) 0%, rgba(13,27,42,0.5) 60%, transparent 100%); display: flex; align-items: center; }
+    .welder-banner-text { padding: 48px 56px; max-width: 580px; }
+    .welder-banner-text h2 { font-size: clamp(24px, 3vw, 38px); font-weight: 800; color: var(--white); letter-spacing: -1px; line-height: 1.2; margin-bottom: 14px; }
+    .welder-banner-text h2 em { color: var(--amber); font-style: normal; }
+    .welder-banner-text p { font-size: 16px; color: rgba(255,255,255,0.6); line-height: 1.7; }
+
+    /* PROOF IMG */
+    .proof-img-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+    .proof-img-card { border-radius: 14px; overflow: hidden; position: relative; height: 200px; }
+    .proof-img-card img { width: 100%; height: 100%; object-fit: cover; }
+    .proof-img-label { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(13,27,42,0.9), transparent); padding: 16px 18px 14px; font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 1px; }
+
+    /* HOW SECTION IMAGE */
+    .how-visual { margin-top: 56px; border-radius: 16px; overflow: hidden; box-shadow: 0 16px 56px rgba(0,0,0,0.12); border: 1px solid var(--gray-200); }
+    .how-visual img { width: 100%; height: 340px; object-fit: cover; object-position: center 20%; display: block; }
+
+    /* NAV */
+    .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(13,27,42,0.97); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.07); padding: 14px 0; }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .nav-logo { font-size: 20px; font-weight: 900; color: var(--white); letter-spacing: -0.5px; }
+    .nav-logo span { color: var(--amber); }
+    .nav-cta { background: var(--amber); color: var(--navy); padding: 10px 22px; border-radius: 8px; font-weight: 700; font-size: 14px; transition: background 0.2s, transform 0.15s; white-space: nowrap; }
+    .nav-cta:hover { background: var(--amber-light); transform: translateY(-1px); }
+    .nav-tag { font-size: 13px; color: rgba(255,255,255,0.45); font-weight: 500; }
+
+    /* HERO */
+    .hero { background: var(--navy); padding: 130px 0 80px; overflow: hidden; position: relative; }
+    .hero::before { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse at 70% 50%, rgba(26,107,175,0.15) 0%, transparent 65%); pointer-events: none; }
+    .hero-eyebrow { display: inline-flex; align-items: center; gap: 8px; background: rgba(232,147,10,0.12); border: 1px solid rgba(232,147,10,0.3); color: var(--amber); padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 28px; }
+    .hero h1 { font-size: clamp(36px, 5vw, 62px); font-weight: 900; line-height: 1.06; letter-spacing: -2px; color: var(--white); margin-bottom: 10px; max-width: 820px; }
+    .hero h1 em { color: var(--amber); font-style: normal; }
+    .hero-sub-red { font-size: clamp(18px, 2.5vw, 24px); font-weight: 700; color: rgba(255,255,255,0.5); margin-bottom: 28px; line-height: 1.4; }
+    .hero-sub-red em { color: #E8644A; font-style: normal; }
+    .hero-body { font-size: 17px; color: rgba(255,255,255,0.65); line-height: 1.75; max-width: 620px; margin-bottom: 40px; }
+    .hero-ctas { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 48px; }
+    .btn-primary { display: inline-flex; align-items: center; gap: 10px; background: var(--amber); color: var(--navy); padding: 16px 32px; border-radius: 8px; font-weight: 800; font-size: 16px; transition: all 0.2s; box-shadow: 0 4px 20px rgba(232,147,10,0.35); }
+    .btn-primary:hover { background: var(--amber-light); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(232,147,10,0.45); }
+    .btn-secondary { display: inline-flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.65); font-size: 15px; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 2px; transition: color 0.2s; }
+    .btn-secondary:hover { color: var(--white); }
+    .hero-trust { display: flex; align-items: center; gap: 28px; flex-wrap: wrap; }
+    .hero-trust-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: rgba(255,255,255,0.4); font-weight: 500; }
+    .hero-trust-item svg { color: var(--amber); flex-shrink: 0; }
+
+    /* PAIN HOOK */
+    .pain-hook { background: var(--navy-mid); border-top: 1px solid rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.06); padding: 48px 0; }
+    .pain-hook-inner { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: rgba(255,255,255,0.07); border-radius: 12px; overflow: hidden; }
+    .pain-stat { background: var(--navy-mid); padding: 32px 28px; text-align: center; }
+    .pain-stat-num { font-size: 48px; font-weight: 900; color: var(--amber); letter-spacing: -2px; line-height: 1; margin-bottom: 8px; }
+    .pain-stat-label { font-size: 14px; color: rgba(255,255,255,0.5); font-weight: 500; line-height: 1.5; }
+    .pain-stat-label strong { display: block; color: rgba(255,255,255,0.85); font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+
+    /* PROBLEM SECTION */
+    .problem { background: var(--off-white); padding: 96px 0; }
+    .section-eyebrow { font-size: 11px; font-weight: 800; letter-spacing: 2.5px; text-transform: uppercase; color: var(--blue); margin-bottom: 14px; }
+    .problem-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .problem h2 { font-size: clamp(28px, 3.5vw, 42px); font-weight: 800; letter-spacing: -1.5px; line-height: 1.12; color: var(--text); margin-bottom: 28px; }
+    .problem h2 em { color: var(--blue); font-style: normal; }
+    .problem-body { font-size: 16px; color: var(--gray-600); line-height: 1.8; margin-bottom: 24px; }
+    .problem-quote { background: var(--white); border-left: 4px solid var(--amber); border-radius: 0 12px 12px 0; padding: 20px 24px; margin-top: 28px; }
+    .problem-quote p { font-size: 15px; font-style: italic; color: var(--gray-600); line-height: 1.65; }
+    .problem-quote cite { display: block; margin-top: 10px; font-size: 12px; font-weight: 700; color: var(--gray-400); font-style: normal; letter-spacing: 0.5px; }
+    .problem-cards { display: flex; flex-direction: column; gap: 14px; }
+    .problem-card { background: var(--white); border-radius: 12px; padding: 22px 24px; border: 1px solid var(--gray-200); display: flex; gap: 16px; align-items: flex-start; transition: box-shadow 0.2s; }
+    .problem-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.07); }
+    .problem-card-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .problem-card-icon.red { background: var(--red-light); }
+    .problem-card-icon.amber { background: var(--amber-pale); }
+    .problem-card h4 { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .problem-card p { font-size: 13px; color: var(--gray-400); line-height: 1.55; }
+
+    /* INSIGHT BANNER */
+    .insight-banner { background: var(--navy); padding: 56px 0; }
+    .insight-inner { max-width: 780px; margin: 0 auto; text-align: center; }
+    .insight-tag { display: inline-block; background: rgba(232,147,10,0.15); border: 1px solid rgba(232,147,10,0.3); color: var(--amber); padding: 5px 14px; border-radius: 6px; font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px; }
+    .insight-banner h2 { font-size: clamp(22px, 3vw, 34px); font-weight: 800; color: var(--white); line-height: 1.35; letter-spacing: -0.5px; margin-bottom: 16px; }
+    .insight-banner h2 em { color: var(--amber); font-style: normal; }
+    .insight-banner p { font-size: 16px; color: rgba(255,255,255,0.55); line-height: 1.7; }
+
+    /* SOLUTION / PILLARS */
+    .solution { background: var(--white); padding: 96px 0; }
+    .solution-head { text-align: center; max-width: 680px; margin: 0 auto 64px; }
+    .solution-head h2 { font-size: clamp(28px, 3.5vw, 44px); font-weight: 800; letter-spacing: -1.5px; color: var(--text); line-height: 1.12; margin-bottom: 14px; }
+    .solution-head p { font-size: 17px; color: var(--gray-600); line-height: 1.7; }
+    .pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .pillar-card { border-radius: 16px; padding: 32px; border: 1px solid var(--gray-200); transition: transform 0.2s, box-shadow 0.2s; position: relative; overflow: hidden; }
+    .pillar-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,0.08); }
+    .pillar-card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 16px 16px 0 0; }
+    .pillar-card:nth-child(1)::before { background: var(--amber); }
+    .pillar-card:nth-child(2)::before { background: var(--blue); }
+    .pillar-card:nth-child(3)::before { background: var(--green); }
+    .pillar-num { font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--gray-400); margin-bottom: 16px; }
+    .pillar-icon { font-size: 28px; margin-bottom: 14px; }
+    .pillar-card h3 { font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 12px; letter-spacing: -0.3px; line-height: 1.25; }
+    .pillar-card p { font-size: 14px; color: var(--gray-600); line-height: 1.7; }
+    .pillar-proof { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--gray-100); font-size: 12px; font-weight: 700; color: var(--gray-400); display: flex; align-items: center; gap: 6px; }
+
+    /* HOW IT WORKS */
+    .how { background: var(--off-white); padding: 96px 0; }
+    .how-head { text-align: center; max-width: 600px; margin: 0 auto 64px; }
+    .how-head h2 { font-size: clamp(26px, 3vw, 40px); font-weight: 800; letter-spacing: -1.5px; color: var(--text); margin-bottom: 12px; }
+    .how-head p { font-size: 16px; color: var(--gray-600); line-height: 1.7; }
+    .how-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; position: relative; }
+    .how-steps::before { content: ""; position: absolute; top: 32px; left: 16.67%; right: 16.67%; height: 2px; background: linear-gradient(to right, var(--amber), var(--blue), var(--green)); z-index: 0; }
+    .how-step { text-align: center; padding: 0 24px; position: relative; z-index: 1; }
+    .how-step-num { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 900; color: var(--white); margin: 0 auto 20px; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+    .how-step:nth-child(1) .how-step-num { background: var(--amber); }
+    .how-step:nth-child(2) .how-step-num { background: var(--blue); }
+    .how-step:nth-child(3) .how-step-num { background: var(--green); }
+    .how-step h4 { font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 10px; }
+    .how-step p { font-size: 14px; color: var(--gray-600); line-height: 1.65; }
+    .how-step-time { display: inline-block; background: var(--gray-100); color: var(--gray-600); font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 100px; margin-top: 10px; }
+
+    /* PROOF / VALIDATION */
+    .proof { background: var(--navy); padding: 96px 0; }
+    .proof-head { text-align: center; max-width: 600px; margin: 0 auto 56px; }
+    .proof-head h2 { font-size: clamp(26px, 3vw, 40px); font-weight: 800; color: var(--white); letter-spacing: -1.5px; margin-bottom: 12px; }
+    .proof-head p { font-size: 16px; color: rgba(255,255,255,0.5); line-height: 1.7; }
+    .proof-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 40px; }
+    .proof-card { background: var(--navy-light); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 28px; }
+    .proof-card-tag { font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--amber); margin-bottom: 12px; }
+    .proof-card p { font-size: 15px; color: rgba(255,255,255,0.7); line-height: 1.7; font-style: italic; margin-bottom: 12px; }
+    .proof-card cite { font-size: 12px; color: rgba(255,255,255,0.35); font-style: normal; font-weight: 600; }
+    .proof-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .proof-stat { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 22px; text-align: center; }
+    .proof-stat-num { font-size: 36px; font-weight: 900; color: var(--amber); letter-spacing: -1.5px; line-height: 1; margin-bottom: 6px; }
+    .proof-stat-label { font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.4; }
+
+    /* OBJECTIONS */
+    .objections { background: var(--off-white); padding: 96px 0; }
+    .objections-head { text-align: center; max-width: 560px; margin: 0 auto 56px; }
+    .objections-head h2 { font-size: clamp(26px, 3vw, 38px); font-weight: 800; letter-spacing: -1.5px; color: var(--text); margin-bottom: 10px; }
+    .objections-head p { font-size: 16px; color: var(--gray-600); }
+    .obj-list { display: flex; flex-direction: column; gap: 16px; max-width: 780px; margin: 0 auto; }
+    .obj-item { background: var(--white); border-radius: 14px; border: 1px solid var(--gray-200); overflow: hidden; }
+    .obj-q { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 22px 24px; cursor: pointer; background: none; border: none; text-align: left; font-family: inherit; gap: 16px; }
+    .obj-q-text { display: flex; align-items: center; gap: 14px; }
+    .obj-q-icon { width: 32px; height: 32px; background: var(--red-light); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+    .obj-q span { font-size: 15px; font-weight: 700; color: var(--text); line-height: 1.35; }
+    .obj-chevron { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--gray-200); display: flex; align-items: center; justify-content: center; color: var(--gray-400); transition: all 0.25s; flex-shrink: 0; font-size: 14px; }
+    .obj-item.open .obj-chevron { background: var(--blue); border-color: var(--blue); color: white; transform: rotate(180deg); }
+    .obj-ans { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+    .obj-item.open .obj-ans { max-height: 200px; }
+    .obj-ans-inner { padding: 0 24px 22px 70px; font-size: 15px; color: var(--gray-600); line-height: 1.75; }
+    .obj-ans-inner strong { color: var(--text); }
+
+    /* CTA SECTION */
+    .cta-section { background: var(--white); padding: 96px 0; }
+    .cta-inner { max-width: 720px; margin: 0 auto; text-align: center; }
+    .cta-section h2 { font-size: clamp(30px, 4vw, 50px); font-weight: 900; letter-spacing: -2px; color: var(--text); line-height: 1.08; margin-bottom: 18px; }
+    .cta-section h2 em { color: var(--blue); font-style: normal; }
+    .cta-section p { font-size: 17px; color: var(--gray-600); line-height: 1.7; margin-bottom: 36px; }
+    .cta-box { background: var(--navy); border-radius: 20px; padding: 48px; }
+    .cta-box h3 { font-size: 22px; font-weight: 800; color: var(--white); margin-bottom: 10px; }
+    .cta-box p { font-size: 15px; color: rgba(255,255,255,0.55); margin-bottom: 28px; line-height: 1.65; }
+    .cta-box .btn-primary { width: 100%; justify-content: center; font-size: 17px; padding: 18px; }
+    .cta-trust { margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap; }
+    .cta-trust-item { font-size: 13px; color: rgba(255,255,255,0.35); display: flex; align-items: center; gap: 6px; }
+    .cta-presenter { margin-top: 28px; padding-top: 28px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 16px; text-align: left; }
+    .cta-presenter-av { width: 48px; height: 48px; border-radius: 50%; background: var(--steel); display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 900; color: var(--white); flex-shrink: 0; }
+    .cta-presenter-name { font-size: 14px; font-weight: 700; color: var(--white); }
+    .cta-presenter-role { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 2px; line-height: 1.4; }
+
+    /* FOOTER */
+    footer { background: var(--navy-mid); border-top: 1px solid rgba(255,255,255,0.06); padding: 32px 0; }
+    .footer-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+    .footer-logo { font-size: 18px; font-weight: 900; color: rgba(255,255,255,0.6); }
+    .footer-logo span { color: var(--amber); }
+    footer p { font-size: 13px; color: rgba(255,255,255,0.25); }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .problem-inner, .how-steps { grid-template-columns: 1fr; }
+      .pillars { grid-template-columns: 1fr; }
+      .proof-grid { grid-template-columns: 1fr; }
+      .proof-stats { grid-template-columns: repeat(3, 1fr); }
+      .pain-hook-inner { grid-template-columns: 1fr; gap: 1px; }
+      .how-steps::before { display: none; }
+      .how-step { padding: 0 0 32px; text-align: left; display: flex; gap: 20px; align-items: flex-start; }
+      .how-step-num { margin: 0; flex-shrink: 0; }
+      .obj-ans-inner { padding-left: 24px; }
+    }
+    @media (max-width: 600px) {
+      .container { padding: 0 18px; }
+      .hero { padding: 100px 0 60px; }
+      .hero-ctas { flex-direction: column; align-items: flex-start; }
+      .proof-stats { grid-template-columns: 1fr 1fr; }
+      .cta-box { padding: 32px 24px; }
+      .pain-hook-inner { border-radius: 0; }
+      .problem { padding: 64px 0; }
+      .solution { padding: 64px 0; }
+      .how { padding: 64px 0; }
+      .proof { padding: 64px 0; }
+      .objections { padding: 64px 0; }
+      .cta-section { padding: 64px 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="container">
+    <div class="nav-inner">
+      <div class="nav-logo">Field<span>Flow</span></div>
+      <div class="nav-tag">Weld Execution Intelligence</div>
+      <a href="#book" class="nav-cta">Book 30 Min →</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-eyebrow">Built for Turnaround Managers · Gulf Coast</div>
+    <h1>You'll hear about the cut-out<br><em>12 hours after it happened.</em><br>By then, it's a schedule problem.</h1>
+    <p class="hero-sub-red">Validated across <em>19 interviews</em> with turnaround managers, QC inspectors, and contractors on the Gulf Coast.</p>
+    <p class="hero-body">FieldFlow gives you real-time weld execution visibility across every contractor and shift — so you stop being the last person to know, and start getting ahead of rework before it becomes a delay.</p>
+    <div class="hero-ctas">
+      <a href="#book" class="btn-primary">
+        See It on a Real Scope — 30 Min with Fabian
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#how" class="btn-secondary">See how it works ↓</a>
+    </div>
+    <div class="hero-img-wrap">
+      <img src="assets/hero.jpg" alt="Turnaround manager reviewing weld execution status at a Gulf Coast refinery">
+      <div class="hero-img-overlay"></div>
+      <div class="hero-img-caption">
+        <span class="hero-img-tag">Gulf Coast Turnaround</span>
+        <span class="hero-img-label">Real-time execution visibility — across every contractor and shift</span>
+      </div>
+    </div>
+
+    <div class="hero-trust">
+      <div class="hero-trust-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        19 customer discovery interviews
+      </div>
+      <div class="hero-trust-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Not a demo deck — a live scope walkthrough
+      </div>
+      <div class="hero-trust-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Peer conversation, not a sales pitch
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PAIN STATS -->
+<section class="pain-hook">
+  <div class="container">
+    <div class="pain-hook-inner">
+      <div class="pain-stat">
+        <div class="pain-stat-num">$30M</div>
+        <div class="pain-stat-label"><strong>Per day of downtime</strong>A single delayed restart. This is the clock every cut-out is running against.</div>
+      </div>
+      <div class="pain-stat">
+        <div class="pain-stat-num">10–20%</div>
+        <div class="pain-stat-label"><strong>Industry rework rate</strong>Validated across 19 interviews. Almost none of it caused by welder skill.</div>
+      </div>
+      <div class="pain-stat">
+        <div class="pain-stat-num">12hrs</div>
+        <div class="pain-stat-label"><strong>Average lag to awareness</strong>How long after a cut-out before you personally hear about it. That gap is what FieldFlow closes.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="problem">
+  <div class="container">
+    <div class="problem-inner">
+      <div>
+        <div class="section-eyebrow">The Real Problem</div>
+        <h2>Your morning stand-up is whatever your <em>contractors decide to tell you.</em></h2>
+        <p class="problem-body">You're coordinating Turner, Zachry, and Performance simultaneously. Each one runs their own travelers, their own QC records, their own shift logs. You're the integration layer — manually stitching together a picture that's always 12 hours behind reality.</p>
+        <p class="problem-body">By the time QC walks the line and flags the cut-out, the crew has rotated, the welder has moved on, and the rework is already cascading into your schedule.</p>
+        <div class="problem-quote">
+          <p>"Trust but verify is always communicated... but it is not implemented."</p>
+          <cite>— Repeated verbatim across multiple interviews with turnaround managers and QC inspectors</cite>
+        </div>
+      </div>
+      <div class="problem-cards">
+        <div class="section-img" style="height:200px;margin-bottom:6px;">
+          <img src="assets/handover.jpg" alt="Shift handover at a pipe welding station">
+        </div>
+        <div class="problem-card">
+          <div class="problem-card-icon red">⏱</div>
+          <div>
+            <h4>Shift Handovers Drop Critical Information</h4>
+            <p>The incoming crew inherits fit-ups with no reliable status record. They walk the stations, eyeball the state, and hope the previous crew left accurate travelers. Most didn't.</p>
+          </div>
+        </div>
+        <div class="problem-card">
+          <div class="problem-card-icon red">📋</div>
+          <div>
+            <h4>Contractor Self-Reporting Is Your Only View</h4>
+            <p>You have no independent verification of execution status until QC walks the line. By then, preventing the cut-out is no longer possible — managing it is all that's left.</p>
+          </div>
+        </div>
+        <div class="problem-card">
+          <div class="problem-card-icon amber">⚠️</div>
+          <div>
+            <h4>Procedure Drift Happens Under Schedule Pressure</h4>
+            <p>Welders deviate from WPS when they're behind. Wrong material specs, unapproved machine parameters, incomplete fit-up checks — and no system flags it before the X-ray.</p>
+          </div>
+        </div>
+        <div class="problem-card">
+          <div class="problem-card-icon amber">🔀</div>
+          <div>
+            <h4>Multi-Contractor Handoffs Create Blame Gaps</h4>
+            <p>Documentation mismatches between crews turn rework attribution into a blame game. Ownership of defects gets disputed while your schedule keeps slipping.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INSIGHT BANNER -->
+<section class="insight-banner">
+  <div class="container">
+    <div class="insight-inner">
+      <div class="insight-tag">Validated Finding · 19 Interviews</div>
+      <h2>Weld defects are almost never caused by <em>bad welders.</em></h2>
+      <p>Across every interview, the same pattern: supervision gaps, procedure non-compliance under schedule pressure, and coordination failures at shift handovers. These are management problems — which means they're solvable with the right visibility tools.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WELDER BANNER -->
+<div class="welder-banner">
+  <img src="assets/welder.jpg" alt="Pipe welder at work in a refinery">
+  <div class="welder-banner-overlay">
+    <div class="welder-banner-text">
+      <h2>The defect is visible <em>before</em> the X-ray.</h2>
+      <p>Fit-up drift, procedure deviation, missed checkpoints — every one of them happens during execution, not inspection. The systems just don't exist yet to surface them in real time. That's what FieldFlow is built for.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SOLUTION / PILLARS -->
+<section class="solution" id="how">
+  <div class="container">
+    <div class="solution-head">
+      <div class="section-eyebrow">The Solution</div>
+      <h2>Real-time execution visibility. Across every contractor, every shift.</h2>
+      <p>FieldFlow gives you an independent view of weld execution status — procedure compliance, fit-up state, inspection readiness — without waiting for QC to walk the line or contractors to self-report.</p>
+    </div>
+    <div class="pillars">
+      <div class="pillar-card">
+        <div class="pillar-num">Pillar 01</div>
+        <div class="pillar-icon">🔍</div>
+        <h3>Stop Relying on Contractor Self-Reporting</h3>
+        <p>Independent execution data across every active weld on your scope — procedure compliance, fit-up status, and inspection readiness — visible to you without waiting for the morning stand-up.</p>
+        <div class="pillar-proof">✓ Validated: current status = verbal stand-ups you can't verify</div>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-num">Pillar 02</div>
+        <div class="pillar-icon">🔄</div>
+        <h3>Shift Handovers That Don't Drop the Ball</h3>
+        <p>Structured handover summaries replace the walkthrough. Every fit-up status, outstanding issue, and weld state captured before the next crew starts — so the information doesn't die between shifts.</p>
+        <div class="pillar-proof">✓ Root cause: most cut-outs traced to handover gaps</div>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-num">Pillar 03</div>
+        <div class="pillar-icon">📊</div>
+        <h3>One Screen. All Contractors.</h3>
+        <p>Turner, Zachry, Performance — consolidated in real time. You stop being the integration layer manually stitching together siloed traveler logs from contractors who don't share information with each other.</p>
+        <div class="pillar-proof">✓ Validated: multi-contractor coordination is primary failure point</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how">
+  <div class="container">
+    <div class="how-head">
+      <div class="section-eyebrow">How It Works</div>
+      <h2>Up and running in days, not months.</h2>
+      <p>Turnarounds are 2–6 weeks. FieldFlow is designed to deploy inside that window — not after it.</p>
+    </div>
+    <div class="how-steps">
+      <div class="how-step">
+        <div class="how-step-num">1</div>
+        <div>
+          <h4>Scope Intake</h4>
+          <p>Load your weld scope — unit, weld count, contractor assignments, WPS references. Takes one planning session with your QC manager.</p>
+          <span class="how-step-time">Day 1–2 before mobilization</span>
+        </div>
+      </div>
+      <div class="how-step">
+        <div class="how-step-num">2</div>
+        <div>
+          <h4>Field Execution Tracking</h4>
+          <p>Crews log weld status at each stage. Supervisors get real-time alerts on procedure drift, missed checkpoints, and handover gaps — before QC walks the line.</p>
+          <span class="how-step-time">Live during the turnaround</span>
+        </div>
+      </div>
+      <div class="how-step">
+        <div class="how-step-num">3</div>
+        <div>
+          <h4>Manager Dashboard</h4>
+          <p>You see the consolidated picture across all contractors and shifts in one view. Morning stand-up becomes a verification, not a discovery session.</p>
+          <span class="how-step-time">Daily, from day one</span>
+        </div>
+      </div>
+    </div>
+    <div class="how-visual">
+      <img src="assets/dashboard.jpg" alt="FieldFlow dashboard showing real-time weld execution status">
+    </div>
+  </div>
+</section>
+
+<!-- PROOF -->
+<section class="proof">
+  <div class="container">
+    <div class="proof-head">
+      <div class="section-eyebrow" style="color:var(--amber);">What We've Validated</div>
+      <h2>Grounded in 19 interviews. Not a pitch deck.</h2>
+      <p>Every claim on this page comes from conversations with turnaround managers, QC inspectors, piping superintendents, and welders on the Gulf Coast.</p>
+    </div>
+    <div class="proof-img-row">
+      <div class="proof-img-card">
+        <img src="assets/inspector.jpg" alt="QC inspector reviewing weld documentation">
+        <div class="proof-img-label">19 interviews · Gulf Coast</div>
+      </div>
+      <div class="proof-img-card">
+        <img src="assets/welder.jpg" alt="Pipe welder at work during turnaround">
+        <div class="proof-img-label">Validated field findings</div>
+      </div>
+    </div>
+    <div class="proof-grid">
+      <div class="proof-card">
+        <div class="proof-card-tag">Interview Finding · Turnaround Manager</div>
+        <p>"Trust but verify is always communicated... but it is not implemented."</p>
+        <cite>Validated across multiple respondents — the supervision gap is systemic, not individual</cite>
+      </div>
+      <div class="proof-card">
+        <div class="proof-card-tag">Interview Finding · QC / Inspection</div>
+        <p>"Owner operators feel the pain further in the process, are not close to the root cause of the problems."</p>
+        <cite>Post-Master Research Memo — 19 interviews, Gulf Coast refinery and contractor professionals</cite>
+      </div>
+      <div class="proof-card">
+        <div class="proof-card-tag">Financial Impact · EOG Resources</div>
+        <p>Single undetected weld defect during turnaround: $500K+ in lost revenue from delayed restart.</p>
+        <cite>Direct interview source — upstream operations, Gulf Coast</cite>
+      </div>
+      <div class="proof-card">
+        <div class="proof-card-tag">Financial Impact · Downstream Refining</div>
+        <p>Weld failures in reactors trigger unplanned shutdowns lasting weeks. Repair cost exceeds $100K per event — before schedule penalty.</p>
+        <cite>Validated: ExxonMobil-scale operations, Gulf Coast refinery context</cite>
+      </div>
+    </div>
+    <div class="proof-stats">
+      <div class="proof-stat">
+        <div class="proof-stat-num">19</div>
+        <div class="proof-stat-label">Customer discovery interviews completed</div>
+      </div>
+      <div class="proof-stat">
+        <div class="proof-stat-num">10–20%</div>
+        <div class="proof-stat-label">Industry rework rate, validated across all interviews</div>
+      </div>
+      <div class="proof-stat">
+        <div class="proof-stat-num">$15B</div>
+        <div class="proof-stat-label">Annual rework burden in U.S. energy sector alone</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OBJECTIONS -->
+<section class="objections">
+  <div class="container">
+    <div class="objections-head">
+      <div class="section-eyebrow">Common Questions</div>
+      <h2>We've heard the pushback.</h2>
+      <p>These are the real objections from our interviews — and the honest answers.</p>
+    </div>
+    <div class="obj-list">
+      <div class="obj-item">
+        <button class="obj-q" onclick="toggleObj(this)">
+          <div class="obj-q-text">
+            <div class="obj-q-icon">🛡</div>
+            <span>"We already have a QC process."</span>
+          </div>
+          <div class="obj-chevron">▾</div>
+        </button>
+        <div class="obj-ans">
+          <div class="obj-ans-inner">
+            <strong>FieldFlow doesn't replace QC — it gives you visibility before QC catches it.</strong> QC documents what happened. FieldFlow surfaces what's happening during execution — between the start of a weld and when the X-ray is taken. That gap is where every cut-out is born. The goal is that QC finds nothing, because you already fixed it.
+          </div>
+        </div>
+      </div>
+      <div class="obj-item">
+        <button class="obj-q" onclick="toggleObj(this)">
+          <div class="obj-q-text">
+            <div class="obj-q-icon">👷</div>
+            <span>"My contractors won't adopt another tool."</span>
+          </div>
+          <div class="obj-chevron">▾</div>
+        </button>
+        <div class="obj-ans">
+          <div class="obj-ans-inner">
+            <strong>Superintendents adopt tools that protect their own metrics.</strong> The piping superintendent's bonus is tied to first-time pass rate — FieldFlow is their tool too, not just yours. Start with one champion crew. Adoption follows results, not mandates. We've validated this with the superintendent persona directly: when the tool protects their shift numbers, they become your internal champion.
+          </div>
+        </div>
+      </div>
+      <div class="obj-item">
+        <button class="obj-q" onclick="toggleObj(this)">
+          <div class="obj-q-text">
+            <div class="obj-q-icon">📅</div>
+            <span>"Now isn't the time — we're mid-turnaround."</span>
+          </div>
+          <div class="obj-chevron">▾</div>
+        </button>
+        <div class="obj-ans">
+          <div class="obj-ans-inner">
+            <strong>Correct. The conversation happens during planning, 4–8 weeks before mobilization.</strong> The setup takes one session — not weeks of integration. When is your next T/A? A 30-minute call now means FieldFlow is ready before your next scope mobilizes, not scrambled in during it.
+          </div>
+        </div>
+      </div>
+      <div class="obj-item">
+        <button class="obj-q" onclick="toggleObj(this)">
+          <div class="obj-q-text">
+            <div class="obj-q-icon">📋</div>
+            <span>"We're already ASME B31.3 compliant — do I have compliance risk?"</span>
+          </div>
+          <div class="obj-chevron">▾</div>
+        </button>
+        <div class="obj-ans">
+          <div class="obj-ans-inner">
+            <strong>FieldFlow works within your existing compliance framework — it doesn't replace it.</strong> WPS references are loaded as-is. QC signoff workflows remain unchanged. The platform gives your QC manager a visibility layer, not a new approval chain. Your MI manager stays in control of every required sign-off.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="book">
+  <div class="container">
+    <div class="cta-inner">
+      <h2>Stop being the last person<br>to know about a <em>cut-out.</em></h2>
+      <p>One scope. One conversation. We'll show you what real-time weld execution visibility looks like — using your scope structure, not a generic demo.</p>
+      <div class="cta-box">
+        <h3>Book 30 Minutes with Fabian</h3>
+        <p>Not a sales pitch. A live walkthrough using a real turnaround scope. Fabian Gomez — downstream chemical engineer, turnaround execution background. This is a peer conversation.</p>
+        <a href="https://calendly.com/fieldflow/scope-review" class="btn-primary" target="_blank" rel="noopener">
+          Book the Scope Review — 30 Min
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        </a>
+        <div class="cta-trust">
+          <div class="cta-trust-item">✓ No commitment required</div>
+          <div class="cta-trust-item">✓ Use your own scope data</div>
+          <div class="cta-trust-item">✓ ASME B31.3 compatible</div>
+        </div>
+        <div class="cta-presenter">
+          <div class="cta-presenter-av">F</div>
+          <div>
+            <div class="cta-presenter-name">Fabian Gomez</div>
+            <div class="cta-presenter-role">Co-Founder, FieldFlow · Downstream Chemical Engineer · Turnaround Execution Background</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">Field<span>Flow</span></div>
+      <p>Weld Execution Intelligence for Gulf Coast Turnarounds</p>
+      <p>© 2026 FieldFlow. Built at Rice University.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Nav scroll
+  const nav = document.querySelector('.nav');
+  window.addEventListener('scroll', () => {
+    nav.style.borderBottomColor = window.scrollY > 40 ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.07)';
+  });
+
+  // FAQ accordion
+  function toggleObj(btn) {
+    const item = btn.closest('.obj-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.obj-item.open').forEach(el => el.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+
+  // Count-up on scroll
+  function animateCounter(el) {
+    if (el.dataset.animated) return;
+    el.dataset.animated = true;
+    const text = el.textContent;
+    const hasDecimal = text.includes('–');
+    if (hasDecimal) return; // skip ranges
+    const num = parseFloat(text.replace(/[^0-9.]/g, ''));
+    const suffix = text.replace(/[0-9.]/g, '');
+    if (isNaN(num)) return;
+    let start = 0;
+    const steps = 50;
+    const step = num / steps;
+    const timer = setInterval(() => {
+      start += step;
+      if (start >= num) { start = num; clearInterval(timer); }
+      el.textContent = (Number.isInteger(num) ? Math.round(start) : start.toFixed(1)) + suffix;
+    }, 30);
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('.pain-stat-num, .proof-stat-num').forEach(animateCounter);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  document.querySelectorAll('.pain-hook, .proof').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
